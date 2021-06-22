@@ -4,7 +4,6 @@ from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 from astropy import units as u
 import numpy as np
 import usample
-import rates
 
 
 class Catalog():
