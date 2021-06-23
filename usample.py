@@ -1,3 +1,5 @@
+"""methods to build cosmic merger populations"""
+
 from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 import astropy.units as u
 import pandas as pd
@@ -88,6 +90,7 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
 
     # sample an initial redshift from our SFR generator
     z = next(md_zs(sfr_model, z_max))
+    
     # Assign an initial metallicity from the metallicity bins based on the metallicity index: i
     Z = np.random.uniform(low=met_bins[i], high=met_bins[i + 1])
 
@@ -172,8 +175,7 @@ def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=
     # z_s: formation redshifts
     # Z_s: metallicities
     ibins, j_s, z_s, Z_s = zip(*[x for (x, i) in
-                                 zip(draw_metallicities_and_redshifts(mets, ns, Ns, sigma_logZ,
-                                                                      sfr_model, z_max),
+                                 zip(draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max),
                                      tqdm.tqdm(range(n_sample))) if
                                  i % n_downsample == 0])
     # we want all of these indices to be in arrays to do array manipulation later
@@ -210,14 +212,14 @@ def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=
             # connect the formation redshifts and metallicities to the COSMIC data
             if len(dat) == 0:
                 dat = np.vstack([t_form, t_merge, z_s[met_mask],
-                                 Z_s[met_mask], np.ones(met_mask) * mets[ii],
+                                 Z_s[met_mask], np.ones(len(t_form)) * mets[ii],
                                  mergers[ii][j_s[met_mask], m1_ind],
                                  mergers[ii][j_s[met_mask], m2_ind],
                                  mergers[ii][j_s[met_mask], bin_num_ind]])
             else:
                 dat = np.append(dat, np.vstack(
                     [t_form, t_merge, z_s[met_mask],
-                     Z_s[met_mask], np.ones(met_mask) * mets[ii],
+                     Z_s[met_mask], np.ones(len(t_form)) * mets[ii],
                      mergers[ii][j_s[met_mask], m1_ind],
                      mergers[ii][j_s[met_mask], m2_ind],
                      mergers[ii][j_s[met_mask], bin_num_ind]]),

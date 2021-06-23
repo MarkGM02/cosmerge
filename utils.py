@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 from scipy.interpolate import interp1d
-
+from astropy import units as u
 
 def get_z_interp(z_max):
     """Generates an interpolation to convert between lookback

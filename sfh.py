@@ -1,4 +1,4 @@
-"""Contains cosmic star formation histories"""
+"""Contains cosmic star formation information"""
 
 import numpy as np
 from scipy.stats import norm
@@ -47,7 +47,7 @@ def mf_17(z):
     return sfr
 
 
-def mean_metal_log_z(z, Zsun):
+def mean_metal_log_z(z, Zsun=0.017):
     """
     Mass-weighted average log(metallicity) as a function of redshift
     From Madau & Fragos (2017)

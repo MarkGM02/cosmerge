@@ -19,11 +19,10 @@ class Catalog():
 
     """
 
-    def __init__(self, dat_path, merger_type, sfr_model, n_sample, met_grid):
+    def __init__(self, dat_path, merger_type, sfr_model, met_grid):
         self.dat_path = dat_path
         self.merger_type = merger_type
         self.sfr_model = sfr_model
-        self.n_sample = n_sample
         self.met_grid = met_grid
 
     def build_cat(self, n_sample, n_downsample, sigma_logZ=0.5, z_max=20):
