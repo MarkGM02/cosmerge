@@ -3,6 +3,7 @@
 from scipy.stats import gaussian_kde
 import numpy as np
 from scipy.special import logit
+from scipy.interpolate import interp1d
 from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 import astropy.units as u
 
@@ -244,6 +245,6 @@ def get_pz(t_lb, z_max=15):
     norm = np.trapz(dN_dt_dz, zs)
 
     # Create new kde of normalized dN_dt_dz
-    p_z = gaussian_kde(dN_dt_dz/norm)
+    p_z = interp1d(zs, dN_dt_dz/norm)
 
     return p_z
