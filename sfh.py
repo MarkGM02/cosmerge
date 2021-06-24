@@ -24,7 +24,6 @@ def md_14(z):
     return sfr
 
 
-
 def mf_17(z):
     """The Madau & Fragos (2017) star formation rate
     per comoving volume as a function of redshift
@@ -97,9 +96,4 @@ def log_p_Z_z(Z, z, sigma_logZ):
     sigma = np.ones_like(z) * sigma_logZ
 
     return -np.log(Z) - np.log(sigma) - 0.5 * np.square((np.log(Z) - mu) / sigma)
-
-
-
-
-
 
