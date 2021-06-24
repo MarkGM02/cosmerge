@@ -117,7 +117,7 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
         yield i, j, z, Z
 
 
-def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=0.5, z_max=20):
+def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=0.5, z_max=15):
     """
     Generates a universe of star formation by sampling metallicities and
     redshifts according to the user specified star formation rate model,
@@ -144,7 +144,7 @@ def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=
     sfr_model : `function`
         Function which returns the star formation rate model
 
-    sigma_logZ : `function`
+    sigma_logZ : `float`
         Function giving the standard deviation of the (natural) log metallicity at redshift `z`: `sigma_logZ(z)`
 
     z_max : `float`

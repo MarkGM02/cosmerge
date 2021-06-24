@@ -6,6 +6,7 @@ from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 from scipy.interpolate import interp1d
 from astropy import units as u
 
+
 def get_z_interp(z_max):
     """Generates an interpolation to convert between lookback
     time and redshift
@@ -67,7 +68,6 @@ def read_met_data(path, met_read):
     bpp_bin_num = np.append(bpp_bin_num, bpp_ce_2_pess.bin_num.unique())
     bpp_bin_num = np.unique(bpp_bin_num)
     BBH = bpp.loc[(bpp.kstar_1 == 14) & (bpp.kstar_2 == 14) & (bpp.evol_type == 3) & (bpp.bin_num.isin(bpp_bin_num))]
-    bpp = []
 
     return np.array(BBH), N_stars, M_stars
 

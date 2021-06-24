@@ -1,7 +1,6 @@
 """Contains cosmic star formation information"""
 
 import numpy as np
-from scipy.stats import norm
 import astropy.units as u
 
 
