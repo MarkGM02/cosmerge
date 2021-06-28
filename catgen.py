@@ -3,7 +3,7 @@
 from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 from astropy import units as u
 import numpy as np
-import usample
+import usample, utils
 
 
 class Catalog():
@@ -19,23 +19,42 @@ class Catalog():
 
     """
 
-    def __init__(self, dat_path, merger_type, sfr_model, met_grid):
+    def __init__(self, dat_path, sfr_model, met_grid, kstar_1, kstar_2, SFstart, SFduration):
         self.dat_path = dat_path
-        self.merger_type = merger_type
         self.sfr_model = sfr_model
         self.met_grid = met_grid
+        self.kstar_1 = kstar_1
+        self.kstar_2 = kstar_2
+        self.SFstart = SFstart
+        self.SFduration = SFduration
+        
+        Ms, Ns, ns, BBH_dat = utils.get_cosmic_data(path=self.dat_path, 
+                                                    kstar_1=self.kstar_1, 
+                                                    kstar_2=self.kstar_2,
+                                                    mets=self.met_grid,
+                                                    SFstart=13700.0, 
+                                                    SFduration=0.0)
+        self.M_sim = Ms
+        self.N_sim = Ns
+        self.n_BBH = ns
+        self.BBH_dat = BBH_dat
 
+   
+    
     def build_cat(self, n_sample, n_downsample, sigma_logZ=0.5, z_max=20):
-        mergers, Ms, ns, ibins = usample.generate_universe(n_sample=n_sample,
+        mergers, ibins = usample.generate_universe(n_sample=n_sample,
                                                            n_downsample=n_downsample,
                                                            mets=self.met_grid,
-                                                           path=self.dat_path,
+                                                           M_sim=self.M_sim, 
+                                                           N_sim=self.N_sim, 
+                                                           n_BBH=self.n_BBH, 
+                                                           mergers=self.BBH_dat,
                                                            sfr_model=self.sfr_model,
                                                            sigma_logZ=sigma_logZ,
                                                            z_max=z_max)
 
         z = np.expm1(np.linspace(0, np.log1p(z_max), 1000))
-        M_merger = np.mean(Ms[ibins] / ns[ibins])
+        M_merger = np.mean(self.M_sim[ibins] / self.n_BBH[ibins])
 
         # divide by 1e6 because COSMIC time is in Myr
         M_star_U = np.trapz(self.sfr_model(z).to(u.Msun * u.yr**(-1) * u.Gpc**(-3)).value,

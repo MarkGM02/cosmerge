@@ -48,31 +48,7 @@ def get_met_bins(mets):
     return met_bins[::2]
 
 
-def read_met_data(path, met_read):
-    if met_read > 0.00009:
-        f = '{}/dat_kstar1_13_14_kstar2_13_14_SFstart_13700.0_SFduration_0.0_metallicity_{}.h5'.format(met_read,
-                                                                                                       met_read)
-    else:
-        f = '0.000085/dat_kstar1_13_14_kstar2_13_14_SFstart_13700.0_SFduration_0.0_metallicity_8.5e-05.h5'
-    N_stars = np.max(pd.read_hdf(path + '/' + f, key='n_stars'))[0]
-    M_stars = np.max(pd.read_hdf(path + '/' + f, key='mass_stars'))[0]
-
-    # filter out the HG donor common envelope binaries
-    bpp = pd.read_hdf(path + '/' + f, key='bpp')
-    bpp_ce = bpp.loc[(bpp.evol_type == 7)]
-    bpp_ce_1 = bpp_ce.loc[(bpp_ce.RRLO_1 > 1)]
-    bpp_ce_2 = bpp_ce.loc[(bpp_ce.RRLO_2 > 1)]
-    bpp_ce_1_pess = bpp_ce_1.loc[~bpp_ce_1.kstar_1.isin([2, 8])]
-    bpp_ce_2_pess = bpp_ce_2.loc[~bpp_ce_2.kstar_2.isin([2, 8])]
-    bpp_bin_num = bpp_ce_1_pess.bin_num.unique()
-    bpp_bin_num = np.append(bpp_bin_num, bpp_ce_2_pess.bin_num.unique())
-    bpp_bin_num = np.unique(bpp_bin_num)
-    BBH = bpp.loc[(bpp.kstar_1 == 14) & (bpp.kstar_2 == 14) & (bpp.evol_type == 3) & (bpp.bin_num.isin(bpp_bin_num))]
-
-    return np.array(BBH), N_stars, M_stars
-
-
-def get_cosmic_data(path, mets):
+def read_met_data(path, kstar_1, kstar_2, metallicity, SFstart=13700.0, SFduration=0.0):
     """
     Reads in all COSMIC data for specified metallicity grid
 
@@ -80,10 +56,76 @@ def get_cosmic_data(path, mets):
     ----------
     path : `string`
         path to COSMIC data where the path structure
-        should be '{metallicity bin}/dat...'
+        should be '{path}/dat_kstar1...'
+    
+    kstar_1 : `string`
+        kstar for the primary following COSMIC notation
+        
+    kstar_2 : `string`
+        kstar for the secondary following COSMIC notation
 
     mets : `numpy.array`
         metallicity grid for COSMIC data
+        
+    SFstart : `float`
+        ZAMS lookback time for population
+    
+    SFduration : `float`
+        Duration of star formation
+
+    Returns
+    -------
+    BBH : `numpy.array`
+        Data containing compact object binaries
+        
+    N_stars : `numpy.array`
+        Total number of stars formed including singles to produce
+        the data for each metallicity bin
+
+    M_stars : `numpy.array`
+        Total amount of stars formed in Msun to produce
+        the data for each metallicity bin
+    """
+    metallicity = np.round(metallicity, 8)
+    f = '{}/dat_kstar1_{}_kstar2_{}_SFstart_{}_SFduration_{}_metallicity_{}.h5'.format(path, 
+                                                                                        kstar_1,
+                                                                                        kstar_2,
+                                                                                        SFstart,
+                                                                                        SFduration,
+                                                                                        metallicity)
+    N_stars = np.max(pd.read_hdf(f, key='n_stars'))[0]
+    M_stars = np.max(pd.read_hdf(f, key='mass_stars'))[0]
+
+    bpp = pd.read_hdf(f, key='bpp')
+    BBH = bpp.loc[(bpp.kstar_1 == 14) & (bpp.kstar_2 == 14) & (bpp.evol_type == 3)]
+
+    return np.array(BBH, dtype=object), N_stars, M_stars
+
+
+def get_cosmic_data(path, kstar_1, kstar_2, mets, SFstart=13700.0, SFduration=0.0):
+    """
+    Reads in all COSMIC data for specified metallicity grid
+
+    Parameters
+    ----------
+    path : `string`
+        path to COSMIC data where the path structure
+        should be '{path}/dat_kstar1...'
+    
+    kstar_1 : `string`
+        kstar for the primary following COSMIC notation
+        
+    kstar_2 : `string`
+        kstar for the secondary following COSMIC notation
+
+    mets : `numpy.array`
+        metallicity grid for COSMIC data
+        
+    SFstart : `float`
+        ZAMS lookback time for population
+    
+    SFduration : `float`
+        Duration of star formation
 
     Returns
     -------
@@ -107,7 +149,7 @@ def get_cosmic_data(path, mets):
     ns = []
     dat = []
     for m in mets:
-        d, N, M = read_met_data(path=path, met_read=m)
+        d, N, M = read_met_data(path, kstar_1, kstar_2, m, SFstart=13700.0, SFduration=0.0)
         Ms.append(M)
         Ns.append(N)
         dat.append(d)

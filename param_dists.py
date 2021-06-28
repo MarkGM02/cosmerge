@@ -26,7 +26,7 @@ def get_dN_dtlb_dV(t_lb):
     dN_dt : `scipy.stats.gaussian_kde`
         a kde which evaluates the pdf: dN/(dt_lb dV_com)
     """
-    p_t_lb = gaussian_kde(t_lb, bw_method='scott')
+    p_t_lb = gaussian_kde(t_lb)
 
     def dN_dt(t):
         return p_t_lb(t)
@@ -59,7 +59,7 @@ def get_dN_dtlb_dlnm_dV(t_lb, m):
     """
 
     t, lnm = np.broadcast_arrays(t_lb, np.log(m))
-    p_tlb_lnm = gaussian_kde(np.vstack([t, lnm]), bw_method='scott')
+    p_tlb_lnm = gaussian_kde(np.vstack([t, lnm]))
 
     def dN_d_t_lnm(t_eval, m_eval):
         # set up the kde to evaluate properly with easy to use inputs
@@ -103,7 +103,7 @@ def get_dN_dtlb_dlnm_dq_dV(t_lb, m, q):
     """
 
     t, lnm, logitq = np.broadcast_arrays(t_lb, np.log(m), logit(q))
-    p_tlb_lnm_logitq = gaussian_kde(np.vstack([t, lnm, logitq]), bw_method='scott')
+    p_tlb_lnm_logitq = gaussian_kde(np.vstack([t, lnm, logitq]))
 
     def dN_d_t_lnm_logitq(t_eval, m_eval, q_eval):
         # set up the kde to evaluate properly with easy to use inputs
@@ -148,7 +148,7 @@ def get_dN_dtlb_dlnm1_dlnm2_dV(t_lb, m1, m2):
     """
 
     t, lnm1, lnm2 = np.broadcast_arrays(t_lb, np.log(m1), np.log(m2))
-    p_tlb_lnm1_lnm2 = gaussian_kde(np.vstack([t, lnm1, lnm2]), bw_method='scott')
+    p_tlb_lnm1_lnm2 = gaussian_kde(np.vstack([t, lnm1, lnm2]))
 
     def dN_d_t_lnm1_lnm2(t_eval, m1_eval, m2_eval):
         # set up the kde to evaluate properly with easy to use inputs
@@ -193,7 +193,7 @@ def get_dN_dtlb_dlnm_dZ_dV(t_lb, m, Z):
     """
 
     t, lnm, lnZ = np.broadcast_arrays(t_lb, np.log(m), np.log(Z))
-    p_tlb_lnm_lnZ = gaussian_kde(np.vstack([t, lnm, lnZ]), bw_method='scott')
+    p_tlb_lnm_lnZ = gaussian_kde(np.vstack([t, lnm, lnZ]))
 
     def dN_d_t_lnm_lnZ(t_eval, m_eval, Z_eval):
         # set up the kde to evaluate properly with easy to use inputs

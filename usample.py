@@ -117,7 +117,8 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
         yield i, j, z, Z
 
 
-def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=0.5, z_max=15):
+def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim, n_BBH, mergers,
+                      sfr_model, sigma_logZ=0.5, z_max=15):
     """
     Generates a universe of star formation by sampling metallicities and
     redshifts according to the user specified star formation rate model,
@@ -136,11 +137,19 @@ def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=
 
     mets : `numpy.array`
         The center of each metallicity bin in the COSMIC data grid
+        
 
-    path : `string`
-        path to COSMIC data where the path structure
-        should be '{metallicity bin}/dat...'
+    M_sim : `numpy.array`
+        Total amount of stars formed in Msun to produce
+        the data for each metallicity bin
+        
+    N_sim : `numpy.array`
+        Total number of stars formed to produce
+        the data for each metallicity bin
 
+    n_BBH : `numpy.array`
+        The number of compact object binaries per metallicity bin
+        
     sfr_model : `function`
         Function which returns the star formation rate model
 
@@ -157,25 +166,16 @@ def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=
         and lookback times as well as merger lookback times, masses,
         and COSMIC bin_num indexes
 
-    Ms : `numpy.array`
-        Total amount of stars formed in Msun to produce
-        the data for each metallicity bin
-
-    ns : `numpy.array`
-        The number of compact object binaries per metallicity bin
-
     ibins : `numpy.array`
         Metallicity bin indices for each of the mergers in the catalog
     """
-
-    Ms, Ns, ns, mergers = utils.get_cosmic_data(path, mets)
 
     # ibins: metallicity indices
     # j_s: bbh merger indices
     # z_s: formation redshifts
     # Z_s: metallicities
     ibins, j_s, z_s, Z_s = zip(*[x for (x, i) in
-                                 zip(draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max),
+                                 zip(draw_metallicities_and_redshifts(mets, n_BBH, N_sim, sfr_model, sigma_logZ, z_max),
                                      tqdm.tqdm(range(n_sample))) if
                                  i % n_downsample == 0])
     # we want all of these indices to be in arrays to do array manipulation later
@@ -226,7 +226,9 @@ def generate_universe(n_sample, n_downsample, mets, path, sfr_model, sigma_logZ=
                                 axis=1)
 
     dat = pd.DataFrame(dat.T,
-                       columns=['t_form', 't_merge', 'z_form', 'met', 'met_cosmic', 'm1', 'm2', 'bin_num'])
+                       columns=['t_form', 't_merge', 'z_form', 
+                                'met', 'met_cosmic', 'm1', 'm2', 'bin_num'],
+                       dtype=float)
 
     # return merger catalog, merger fraction, and formation statistics
-    return dat, Ms, ns, ibins
+    return dat, ibins
