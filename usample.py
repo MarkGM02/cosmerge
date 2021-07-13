@@ -39,7 +39,7 @@ def md_zs(sfr_model, z_max):
         yield redshifts
 
 
-def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max):
+def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, z_max):
     """Generator for draws of formation metallicities and redshifts from a
     log-normal metallicity distribution based on Madau & Fragos (2017)
     from the sfh module and a user specified star formation rate model
@@ -52,19 +52,21 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
         The center of each metallicity bin in the COSMIC data grid
     
     ns : `numpy.array`
-        The number of BBH mergers within each metallicity bin.
+        The number of mergers within each metallicity bin.
         
     Ns : `numpy.array`
-        The number of stars sampled to produce the BBH mergers within each metallicity bin
+        The number of stars sampled to produce the mergers within each metallicity bin
 
     sfr_model : `function`
         Function which returns the star formation rate model
 
-    sigma_logZ : `function`
-        Function giving the standard deviation of the (natural) log metallicity at redshift `z`: `sigma_logZ(z)`.
+    sigma_log10Z : `function`
+        Function giving the standard deviation of the metallicity distribution in dex
+        Default : sigma(log10(Z)) = 0.5.
 
     z_max : `float`
         maximum redshift for star formation
+
 
     Returns
     -------
@@ -90,7 +92,7 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
 
     # sample an initial redshift from our SFR generator
     z = next(md_zs(sfr_model, z_max))
-    
+
     # Assign an initial metallicity from the metallicity bins based on the metallicity index: i
     Z = np.random.uniform(low=met_bins[i], high=met_bins[i + 1])
 
@@ -103,7 +105,7 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
 
         # log acceptance probability is the difference between the current and next data points
         # Should we be doing Ns, or Ms here? The rates normalize to the M instead of the N?
-        log_Pacc = sfh.log_p_Z_z(Zp, zp, sigma_logZ) - sfh.log_p_Z_z(Z, z, sigma_logZ) + \
+        log_Pacc = sfh.log_p_Z_z(Zp, zp, sigma_log10Z) - sfh.log_p_Z_z(Z, z, sigma_log10Z) + \
                    np.log(Ns[i]) + np.log(ns[ip]) + np.log(dZs[ip]) - \
                    (np.log(Ns[ip]) + np.log(ns[i]) + np.log(dZs[i]))
 
@@ -117,16 +119,16 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_logZ, z_max)
         yield i, j, z, Z
 
 
-def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim, n_BBH, mergers,
-                      sfr_model, sigma_logZ=0.5, z_max=15):
+def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
+                      n_merger, mergers, sfh_model, sigma_log10Z=0.5,
+                      z_max=15):
     """
     Generates a universe of star formation by sampling metallicities and
     redshifts according to the user specified star formation rate model,
     a mean metallicity evolution from Madau & Fragos (2017)
-    and a log normal metallicity distribution with sigma_logZ out to redshift z_max
+    and a log normal metallicity distribution with sigma_log10Z out to redshift z_max
     then connects these formation redshifts and metallicities to COSMIC
     data for merging compact objects to create a merger catalog
-
     Parameters
     ----------
     n_sample : `integer`
@@ -137,24 +139,26 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim, n_BBH, mergers
 
     mets : `numpy.array`
         The center of each metallicity bin in the COSMIC data grid
-        
 
     M_sim : `numpy.array`
         Total amount of stars formed in Msun to produce
         the data for each metallicity bin
-        
+
     N_sim : `numpy.array`
         Total number of stars formed to produce
         the data for each metallicity bin
 
-    n_BBH : `numpy.array`
+    n_merger : `numpy.array`
         The number of compact object binaries per metallicity bin
-        
-    sfr_model : `function`
-        Function which returns the star formation rate model
 
-    sigma_logZ : `float`
-        Function giving the standard deviation of the (natural) log metallicity at redshift `z`: `sigma_logZ(z)`
+    mergers : `numpy.array`
+        A ragged edge numpy array that contains all mergers for each metallicity bin
+
+    sfh_model : `function`
+        Function which returns the star formation history model
+
+    sigma_log10Z : `float`
+        Function giving the standard deviation of the metallicity distribution in dex
 
     z_max : `float`
         maximum redshift for star formation
@@ -175,7 +179,8 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim, n_BBH, mergers
     # z_s: formation redshifts
     # Z_s: metallicities
     ibins, j_s, z_s, Z_s = zip(*[x for (x, i) in
-                                 zip(draw_metallicities_and_redshifts(mets, n_BBH, N_sim, sfr_model, sigma_logZ, z_max),
+                                 zip(draw_metallicities_and_redshifts(mets, n_merger, N_sim,
+                                                                      sfh_model, sigma_log10Z, z_max),
                                      tqdm.tqdm(range(n_sample))) if
                                  i % n_downsample == 0])
     # we want all of these indices to be in arrays to do array manipulation later
@@ -196,7 +201,7 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim, n_BBH, mergers
     for ii in tqdm.tqdm(range(len(mets))):
         # select all the formation redshift and metallicities in that bin
         met_mask = ibins == ii
-        if len(met_mask) > 0:
+        if len(met_mask[met_mask]) > 0:
             # get all the formation lookback times from the formation redshifts
             # note that the units are in Myr since the COSMIC delay times are also in Myr
             t_form = Planck18.lookback_time(z_s[met_mask]).to(u.Myr).value
@@ -226,8 +231,9 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim, n_BBH, mergers
                                 axis=1)
 
     dat = pd.DataFrame(dat.T,
-                       columns=['t_form', 't_merge', 'z_form', 
-                                'met', 'met_cosmic', 'm1', 'm2', 'bin_num'],
+                       columns=['t_form', 't_merge', 'z_form',
+                                'met', 'met_cosmic', 'm1', 'm2',
+                                'bin_num'],
                        dtype=float)
 
     # return merger catalog, merger fraction, and formation statistics
