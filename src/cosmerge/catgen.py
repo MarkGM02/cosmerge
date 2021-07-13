@@ -3,7 +3,7 @@
 from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 from astropy import units as u
 import numpy as np
-import usample, utils
+from cosmerge import usample, utils
 
 
 class Catalog():
@@ -85,7 +85,7 @@ class Catalog():
         self.n_merger = ns
         self.merger_dat = merger_dat
 
-    def build_cat(self, n_sample, n_downsample, sigma_logZ=0.5, z_max=20):
+    def build_cat(self, n_sample, n_downsample, sigma_log10Z=0.5, z_max=20):
         mergers, ibins = usample.generate_universe(n_sample=n_sample,
                                                    n_downsample=n_downsample,
                                                    mets=self.met_grid,
@@ -94,7 +94,7 @@ class Catalog():
                                                    n_BBH=self.n_merger,
                                                    mergers=self.merger_dat,
                                                    sfh_model=self.sfh_model,
-                                                   sigma_logZ=sigma_logZ,
+                                                   sigma_log10Z=sigma_log10Z,
                                                    z_max=z_max)
 
         z = np.expm1(np.linspace(0, np.log1p(z_max), 1000))

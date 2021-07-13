@@ -7,8 +7,8 @@ import numpy as np
 import tqdm
 from scipy.integrate import cumtrapz
 
-import utils
-import sfh
+from cosmerge import utils
+from cosmerge import sfh
 
 
 def md_zs(sfr_model, z_max):
