@@ -251,6 +251,6 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
     Ms = np.array(Ms)
     Ns = np.array(Ns)
     ns = np.array(ns)
-    dat = np.array(dat)
+    dat = np.array(dat, dtype=object)
 
     return Ms, Ns, ns, dat

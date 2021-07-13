@@ -91,7 +91,7 @@ class Catalog():
                                                    mets=self.met_grid,
                                                    M_sim=self.M_sim, 
                                                    N_sim=self.N_sim, 
-                                                   n_BBH=self.n_merger,
+                                                   n_merger=self.n_merger,
                                                    mergers=self.merger_dat,
                                                    sfh_model=self.sfh_model,
                                                    sigma_log10Z=sigma_log10Z,
@@ -101,7 +101,7 @@ class Catalog():
         M_merger = np.mean(self.M_sim[ibins] / self.n_merger[ibins])
 
         # divide by 1e6 because COSMIC time is in Myr
-        M_star_U = np.trapz(self.sfr_model(z).to(u.Msun * u.yr**(-1) * u.Gpc**(-3)).value,
+        M_star_U = np.trapz(self.sfh_model(z).to(u.Msun * u.yr**(-1) * u.Gpc**(-3)).value,
                             Planck18.lookback_time(z).to(u.yr).value)/1e6
 
         norm_fac = M_star_U / M_merger
