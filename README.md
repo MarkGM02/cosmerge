@@ -1,2 +1,2 @@
 # cosmic-mergers
-a post processing suite to turn COSMIC data into compact object merger catalogs
+a post-processing Package to turn COSMIC data into compact object merger catalogs
