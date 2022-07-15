@@ -5,6 +5,7 @@ import pandas as pd
 from astropy.cosmology import Planck18_arXiv_v2 as Planck18
 from scipy.interpolate import interp1d
 from astropy import units as u
+import tqdm
 
 
 def get_z_interp(z_max):
@@ -77,7 +78,8 @@ def parse_kstar(kstar):
 
 
 def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=0.0,
-                  pessimistic_cut=False, kstar_1_select=None, kstar_2_select=None):
+                  pessimistic_cut=False, CE_cool_cut=False, CE_cut=False, SMT_cut=False,
+                  kstar_1_select=None, kstar_2_select=None):
     """
     Reads in all COSMIC data for specified metallicity grid
 
@@ -109,6 +111,17 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
         Note: this is unnecessary if you specified
         cemergeflag = 1 in the Params file
+
+    CE_cool_filter : `bool`
+        Boolean to decide whether to filter >40 Msun ZAMS
+        based on the Klencki+2021 results (arXiv: 2006.11286)
+
+    CE_cut : `bool`
+        Boolean to decide whether to throw out CE binaries
+
+    SMT_cut : `bool`
+        Boolean to decide whether to throw out 
+        stable mass transfer binaries
 
     kstar_1_select : `list`
         If specified, will select kstars that are a subset of the
@@ -145,6 +158,19 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
     bpp = pd.read_hdf(f, key='bpp')
 
+    if len(bpp.bin_num.unique()) > 1e5:
+        bin_num_keep = np.random.choice(bpp.bin_num.unique(), 100000, replace=False)
+        bpp = bpp.loc[bpp.bin_num.isin(bin_num_keep)]
+    if CE_cut and SMT_cut:
+        raise Error("You can't cut everything! You should leave at least one of CE_cut or SMT_cut False")
+
+    if CE_cut:
+        bpp_CE_bin_num = bpp.loc[bpp.evol_type == 7].bin_num.unique()
+        bpp = bpp.loc[~bpp.bin_num.isin(bpp_CE_bin_num)]
+    if SMT_cut:
+        bpp_CE_bin_num = bpp.loc[bpp.evol_type == 7].bin_num.unique()
+        bpp = bpp.loc[bpp.bin_num.isin(bpp_CE_bin_num)]
+    
     # filter out HG donors if requested
     if pessimistic_cut:
         bpp_pess_cut_1 = bpp.loc[((bpp.evol_type == 7) &
@@ -156,7 +182,21 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
         bpp = bpp.loc[~bpp.bin_num.isin(bpp_pess_cut_1)]
         bpp = bpp.loc[~bpp.bin_num.isin(bpp_pess_cut_2)]
-
+    
+    if CE_cool_filter:
+        bpp_ce_1 = bpp.loc[((bpp.evol_type == 7) & (bpp.RRLO_1 > 1))].bin_num
+        bpp_ce_1_zams = bpp.loc[bpp.bin_num.isin(bpp_ce_1)].groupby('bin_num').first().reset_index()
+        
+        bpp_cut_1 = bpp_ce_1_zams.loc[bpp_ce_1_zams.mass_1 > 40].bin_num
+        
+        bpp_ce_2 = bpp.loc[((bpp.evol_type == 7) & (bpp.RRLO_2 > 1))].bin_num
+        bpp_ce_2_zams = bpp.loc[bpp.bin_num.isin(bpp_ce_2)].groupby('bin_num').first().reset_index()
+        
+        bpp_cut_2 = bpp_ce_2_zams.loc[bpp_ce_2_zams.mass_2 > 40].bin_num
+        
+        bpp = bpp.loc[~bpp.bin_num.isin(bpp_cut_1)]
+        bpp = bpp.loc[~bpp.bin_num.isin(bpp_cut_2)]        
+        
     if kstar_1_select is not None:
         kstar_1 = kstar_1_select
     else:
@@ -178,6 +218,7 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
 def get_cosmic_data(path, kstar_1, kstar_2, mets,
                     SFstart=13700.0, SFduration=0.0, pessimistic_cut=False,
+                    CE_cool_cut=False, CE_cut=False, SMT_cut=False,
                     kstar_1_select=None, kstar_2_select=None):
     """
     Reads in all COSMIC data for specified metallicity grid
@@ -210,6 +251,17 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
 
         Note: this is unnecessary if you specified
         cemergeflag = 1 in the Params file
+        
+    CE_cool_cut : `bool`
+        Boolean to decide whether to allow >40 Msun ZAMS
+        based on the Klencki+2021 results (arXiv: 2006.11286)
+
+    CE_cut : `bool`
+        Boolean to decide whether to throw out CE binaries
+
+    SMT_cut : `bool`
+        Boolean to decide whether to throw out 
+        stable mass transfer binaries
 
     kstar_1_select : `list`
         If specified, will select kstars that are a subset of the
@@ -240,9 +292,11 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
     Ms = []
     ns = []
     dat = []
-    for m in mets:
+    for m in tqdm.tqdm(mets):
         d, N, M = read_met_data(path, kstar_1, kstar_2, m, SFstart=SFstart, SFduration=SFduration,
-                                pessimistic_cut=pessimistic_cut, kstar_1_select=kstar_1_select,
+                                pessimistic_cut=pessimistic_cut, CE_cool_cut=CE_cool_cut,
+                                CE_cut=CE_cut, SMT_cut=SMT_cut,
+                                kstar_1_select=kstar_1_select,
                                 kstar_2_select=kstar_2_select)
         Ms.append(M)
         Ns.append(N)

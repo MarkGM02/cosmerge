@@ -38,12 +38,24 @@ class Catalog():
         Duration of star formation for COSMIC population
 
     pessimistic_cut : `bool`
-        Boolean to decide whether to apply the pessimistic
+        kwarg -- decides whether to apply the pessimistic
         cut to the merger data based on whether there where
         common envelope events with a Hertzsprung Gap donor
 
         Note: this is unnecessary if you specified
         cemergeflag = 1 in the Params file
+
+    CE_cut : `bool`
+        kwarg -- decides whether to throw out
+        CE binaries
+
+    SMT_cut : `bool`
+        kwarg -- decides whether to throw out 
+        stable mass transfer binaries
+
+    CE_cool_filter : `bool`
+        kwarg -- decides whether to filter out stars with ZAMS mass
+        > 40 Msun
 
     kstar_1_select : `list`
         kwarg -- If specified, will select kstars that are a subset of the
@@ -55,7 +67,7 @@ class Catalog():
 
     """
 
-    def __init__(self, dat_path, sfh_model, met_grid, kstar_1, kstar_2, SFstart, SFduration, pessimistic_cut, **kwargs):
+    def __init__(self, dat_path, sfh_model, met_grid, kstar_1, kstar_2, SFstart, SFduration, **kwargs):
         self.dat_path = dat_path
         self.sfh_model = sfh_model
         self.met_grid = met_grid
@@ -63,11 +75,14 @@ class Catalog():
         self.kstar_2 = kstar_2
         self.SFstart = SFstart
         self.SFduration = SFduration
-        self.pessimistic_cut = pessimistic_cut
-        if 'kstar_1_select' not in kwargs:
-            self.kstar_1_select = None
-        if 'kstar_2_select' not in kwargs:
-            self.kstar_2_select = None
+
+        kwarg_list = ['kstar_1_select', 'kstar_2_select', 'pessimistic_cut', 'CE_cut', 'SMT_cut']
+        for k in kwarg_list:
+            if 'kstar' in k:
+                setattr(self, k, None)
+            else:
+                setattr(self, k, False)
+
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -78,6 +93,9 @@ class Catalog():
                                                        SFstart=13700.0,
                                                        SFduration=0.0,
                                                        pessimistic_cut=self.pessimistic_cut,
+                                                       CE_cool_filter=self.CE_cool_filter,
+                                                       CE_cut = self.CE_cut,
+                                                       SMT_cut = self.SMT_cut,
                                                        kstar_1_select=self.kstar_1_select,
                                                        kstar_2_select=self.kstar_2_select)
         self.M_sim = Ms
