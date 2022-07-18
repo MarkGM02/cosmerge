@@ -67,7 +67,7 @@ class Catalog():
 
     """
 
-    def __init__(self, dat_path, sfh_model, met_grid, kstar_1, kstar_2, SFstart, SFduration, **kwargs):
+    def __init__(self, dat_path, sfh_model, met_grid, kstar_1, kstar_2, **kwargs):
         self.dat_path = dat_path
         self.sfh_model = sfh_model
         self.met_grid = met_grid
@@ -80,8 +80,12 @@ class Catalog():
         for k in kwarg_list:
             if 'kstar' in k:
                 setattr(self, k, None)
-            else:
+            elif 'cut' in k:
                 setattr(self, k, False)
+            elif k == 'SFstart':
+                setattr(self, k, 13700.0)
+            elif k == 'SFduration':
+                setattr(self, k, 0.0)
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -90,8 +94,8 @@ class Catalog():
                                                        kstar_1=self.kstar_1,
                                                        kstar_2=self.kstar_2,
                                                        mets=self.met_grid,
-                                                       SFstart=13700.0,
-                                                       SFduration=0.0,
+                                                       SFstart=self.SFstart,
+                                                       SFduration=self.sfduration,
                                                        pessimistic_cut=self.pessimistic_cut,
                                                        CE_cool_filter=self.CE_cool_filter,
                                                        CE_cut = self.CE_cut,
