@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>draw_metallicities_and_redshifts &#8212; cosmerge 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/readable.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="generate_universe" href="cosmerge.usample.generate_universe.html" />
+    <link rel="prev" title="Catalog" href="cosmerge.catgen.Catalog.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cosmerge.usample.generate_universe.html" title="generate_universe"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cosmerge.catgen.Catalog.html" title="Catalog"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">cosmerge 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" accesskey="U">cosmerge modules and API reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">draw_metallicities_and_redshifts</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="draw-metallicities-and-redshifts">
+<h1>draw_metallicities_and_redshifts<a class="headerlink" href="#draw-metallicities-and-redshifts" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="cosmerge.usample.draw_metallicities_and_redshifts">
+<span class="sig-prename descclassname"><span class="pre">cosmerge.usample.</span></span><span class="sig-name descname"><span class="pre">draw_metallicities_and_redshifts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfr_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_log10Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cosmerge.usample.draw_metallicities_and_redshifts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for draws of formation metallicities and redshifts from a
+log-normal metallicity distribution based on Madau &amp; Fragos (2017)
+from the sfh module and a user specified star formation rate model
+and connects to populations synthesized on a regular
+grid of metallicity spaced uniform in log10(Z)</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mets</strong><span class="classifier">numpy.array</span></dt><dd><p>The center of each metallicity bin in the COSMIC data grid</p>
+</dd>
+<dt><strong>ns</strong><span class="classifier">numpy.array</span></dt><dd><p>The number of mergers within each metallicity bin.</p>
+</dd>
+<dt><strong>Ns</strong><span class="classifier">numpy.array</span></dt><dd><p>The number of stars sampled to produce the mergers within each metallicity bin</p>
+</dd>
+<dt><strong>sfr_model</strong><span class="classifier">str</span></dt><dd><p>Function which returns the star formation rate model</p>
+</dd>
+<dt><strong>sigma_log10Z</strong><span class="classifier">float</span></dt><dd><p>Function giving the standard deviation of the metallicity distribution in dex
+Default : sigma(log10(Z)) = 0.5.</p>
+</dd>
+<dt><strong>z_max</strong><span class="classifier">float</span></dt><dd><p>maximum redshift for star formation</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt>Yields a series of <cite>i, j, z, Z</cite> for each drawn metallicity and redshift</dt><dd></dd>
+<dt><strong>`i`</strong><span class="classifier">metallicity bin index</span></dt><dd></dd>
+<dt><strong>`j`</strong><span class="classifier">the index of the system within that bin</span></dt><dd></dd>
+<dt><strong>`z`</strong><span class="classifier">the redshift of formation</span></dt><dd></dd>
+<dt><strong>`Z`</strong><span class="classifier">the randomly-assigned metallicity within the bin <cite>i</cite>.</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="../modules.html">cosmerge modules and API reference</a><ul>
+      <li>Previous: <a href="cosmerge.catgen.Catalog.html" title="previous chapter">Catalog</a></li>
+      <li>Next: <a href="cosmerge.usample.generate_universe.html" title="next chapter">generate_universe</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/cosmerge.usample.draw_metallicities_and_redshifts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="footer">
+    &copy; Copyright 2022, Katie Breivik.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.1.
+  </div>
+  
+  </body>
+</html>

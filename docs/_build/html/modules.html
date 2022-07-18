@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>cosmerge modules and API reference &#8212; cosmerge 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/readable.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Catalog" href="api/cosmerge.catgen.Catalog.html" />
+    <link rel="prev" title="Welcome to cosmic-mergers’s documentation!" href="index.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api/cosmerge.catgen.Catalog.html" title="Catalog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to cosmic-mergers’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">cosmerge 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">cosmerge modules and API reference</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="cosmerge-modules-and-api-reference">
+<h1>cosmerge modules and API reference<a class="headerlink" href="#cosmerge-modules-and-api-reference" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="module-cosmerge.catgen">
+<span id="cosmerge-catgen-module"></span><h2>cosmerge.catgen Module<a class="headerlink" href="#module-cosmerge.catgen" title="Permalink to this heading">¶</a></h2>
+<p>class for generating catalogs</p>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.catgen.Catalog.html#cosmerge.catgen.Catalog" title="cosmerge.catgen.Catalog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Catalog</span></code></a>(dat_path, sfh_model, met_grid, ...)</p></td>
+<td><p>Class for building a generic catalog of merging compact objects from COSMIC data in metallicity grid</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="class-inheritance-diagram">
+<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this heading">¶</a></h3>
+<div class="graphviz"><img src="_images/inheritance-58fcc39115a46f41b0582c2e54c3154815622c75.png" alt="Inheritance diagram of cosmerge.catgen.Catalog" usemap="#inheritance07e1075104" class="inheritance graphviz" /></div>
+<map id="inheritance07e1075104" name="inheritance07e1075104">
+<area shape="rect" id="node1" href="api/cosmerge.catgen.Catalog.html#cosmerge.catgen.Catalog" target="_top" title="Class for building a generic catalog of merging compact objects" alt="" coords="5,5,77,31"/>
+</map></section>
+</section>
+<section id="module-cosmerge.usample">
+<span id="cosmerge-usample-module"></span><h2>cosmerge.usample Module<a class="headerlink" href="#module-cosmerge.usample" title="Permalink to this heading">¶</a></h2>
+<p>methods to build cosmic merger populations</p>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.usample.draw_metallicities_and_redshifts.html#cosmerge.usample.draw_metallicities_and_redshifts" title="cosmerge.usample.draw_metallicities_and_redshifts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_metallicities_and_redshifts</span></code></a>(mets, ns, ...)</p></td>
+<td><p>Generator for draws of formation metallicities and redshifts from a log-normal metallicity distribution based on Madau &amp; Fragos (2017) from the sfh module and a user specified star formation rate model and connects to populations synthesized on a regular grid of metallicity spaced uniform in log10(Z)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.usample.generate_universe.html#cosmerge.usample.generate_universe" title="cosmerge.usample.generate_universe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_universe</span></code></a>(n_sample, n_downsample, ...)</p></td>
+<td><p>Generates a universe of star formation by sampling metallicities and redshifts according to the user specified star formation rate model, a mean metallicity evolution from Madau &amp; Fragos (2017) and a log normal metallicity distribution with sigma_log10Z out to redshift z_max then connects these formation redshifts and metallicities to COSMIC data for merging compact objects to create a merger catalog</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.usample.md_zs.html#cosmerge.usample.md_zs" title="cosmerge.usample.md_zs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">md_zs</span></code></a>(sfr_model, z_max)</p></td>
+<td><p>A generator that returns redshifts of formation drawn from the user-specified SFR model</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="module-cosmerge.sfh">
+<span id="cosmerge-sfh-module"></span><h2>cosmerge.sfh Module<a class="headerlink" href="#module-cosmerge.sfh" title="Permalink to this heading">¶</a></h2>
+<p>Contains cosmic star formation information</p>
+<section id="id1">
+<h3>Functions<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.sfh.log_p_Z_z.html#cosmerge.sfh.log_p_Z_z" title="cosmerge.sfh.log_p_Z_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_p_Z_z</span></code></a>(Z, z, sigma_log10Z)</p></td>
+<td><p>Computes the metallicity and redshift log probability distribution function assuming a log normal metallicity distribution with sigma at each redshift</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.sfh.md_14.html#cosmerge.sfh.md_14" title="cosmerge.sfh.md_14"><code class="xref py py-obj docutils literal notranslate"><span class="pre">md_14</span></code></a>(z)</p></td>
+<td><p>The Madau &amp; Dickinson (2014) star formation rate per comoving volume as a function of redshift</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.sfh.mean_metal_log_z.html#cosmerge.sfh.mean_metal_log_z" title="cosmerge.sfh.mean_metal_log_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_metal_log_z</span></code></a>(z[, Zsun])</p></td>
+<td><p>Mass-weighted average log(metallicity) as a function of redshift From Madau &amp; Fragos (2017)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.sfh.mf_17.html#cosmerge.sfh.mf_17" title="cosmerge.sfh.mf_17"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mf_17</span></code></a>(z)</p></td>
+<td><p>The Madau &amp; Fragos (2017) star formation rate per comoving volume as a function of redshift</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="module-cosmerge.param_dists">
+<span id="cosmerge-param-dists-module"></span><h2>cosmerge.param_dists Module<a class="headerlink" href="#module-cosmerge.param_dists" title="Permalink to this heading">¶</a></h2>
+<p>methods for making distribution functions for rates</p>
+<section id="id2">
+<h3>Functions<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.param_dists.get_dN_dtlb_dV.html#cosmerge.param_dists.get_dN_dtlb_dV" title="cosmerge.param_dists.get_dN_dtlb_dV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dN_dtlb_dV</span></code></a>(t_lb)</p></td>
+<td><p>Creates a kde of the merger lookback times Note that since t_lb has values -inf &lt; t_lb &lt; inf the kde is properly normalized to be evaluated at t_lb &gt; 0 or z(t_lb &gt; 0)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.param_dists.get_dN_dtlb_dlnm1_dlnm2_dV.html#cosmerge.param_dists.get_dN_dtlb_dlnm1_dlnm2_dV" title="cosmerge.param_dists.get_dN_dtlb_dlnm1_dlnm2_dV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dN_dtlb_dlnm1_dlnm2_dV</span></code></a>(t_lb, m1, m2)</p></td>
+<td><p>Creates a kde of the merger lookback times, masses, and mass ratios Note that since t_lb has values -inf &lt; t_lb &lt; inf the kde is properly normalized to be evaluated at t_lb &gt; 0 or z(t_lb &gt; 0), to enforce proper mass boundaries we return dln(m) and dlogit(q)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.param_dists.get_dN_dtlb_dlnm_dV.html#cosmerge.param_dists.get_dN_dtlb_dlnm_dV" title="cosmerge.param_dists.get_dN_dtlb_dlnm_dV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dN_dtlb_dlnm_dV</span></code></a>(t_lb, m)</p></td>
+<td><p>Creates a kde of the merger lookback times and masses Note that since t_lb has values -inf &lt; t_lb &lt; inf the kde is properly normalized to be evaluated at t_lb &gt; 0 or z(t_lb &gt; 0) and to enforce proper mass boundaries, we return dln(m)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.param_dists.get_dN_dtlb_dlnm_dZ_dV.html#cosmerge.param_dists.get_dN_dtlb_dlnm_dZ_dV" title="cosmerge.param_dists.get_dN_dtlb_dlnm_dZ_dV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dN_dtlb_dlnm_dZ_dV</span></code></a>(t_lb, m, Z)</p></td>
+<td><p>Creates a kde of the merger lookback times, masses, and mass ratios Note that since t_lb has values -inf &lt; t_lb &lt; inf the kde is properly normalized to be evaluated at t_lb &gt; 0 or z(t_lb &gt; 0), to enforce proper mass boundaries we return dln(m) and dln(Z)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.param_dists.get_dN_dtlb_dlnm_dq_dV.html#cosmerge.param_dists.get_dN_dtlb_dlnm_dq_dV" title="cosmerge.param_dists.get_dN_dtlb_dlnm_dq_dV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dN_dtlb_dlnm_dq_dV</span></code></a>(t_lb, m, q)</p></td>
+<td><p>Creates a kde of the merger lookback times, masses, and mass ratios Note that since t_lb has values -inf &lt; t_lb &lt; inf the kde is properly normalized to be evaluated at t_lb &gt; 0 or z(t_lb &gt; 0), to enforce proper mass boundaries we return dln(m) and dlogit(q)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.param_dists.get_pz.html#cosmerge.param_dists.get_pz" title="cosmerge.param_dists.get_pz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pz</span></code></a>(t_lb[, z_max])</p></td>
+<td><p>Creates a pdf which predicts the probability of merger redshifts based on the rate at the detector per redshift: dN_dz_dtd</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="module-cosmerge.utils">
+<span id="cosmerge-utils-module"></span><h2>cosmerge.utils Module<a class="headerlink" href="#module-cosmerge.utils" title="Permalink to this heading">¶</a></h2>
+<p>contains utility methods</p>
+<section id="id3">
+<h3>Functions<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.utils.get_cosmic_data.html#cosmerge.utils.get_cosmic_data" title="cosmerge.utils.get_cosmic_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cosmic_data</span></code></a>(path, kstar_1, kstar_2, mets)</p></td>
+<td><p>Reads in all COSMIC data for specified metallicity grid</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.utils.get_met_bins.html#cosmerge.utils.get_met_bins" title="cosmerge.utils.get_met_bins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_met_bins</span></code></a>(mets)</p></td>
+<td><p>Returns the bin edges for metallicity bins centered on supplied metallicities assuming a log_10 spaced metallicity grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.utils.get_z_interp.html#cosmerge.utils.get_z_interp" title="cosmerge.utils.get_z_interp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_z_interp</span></code></a>(z_max)</p></td>
+<td><p>Generates an interpolation to convert between lookback time and redshift</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/cosmerge.utils.parse_kstar.html#cosmerge.utils.parse_kstar" title="cosmerge.utils.parse_kstar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_kstar</span></code></a>(kstar)</p></td>
+<td><p>Parses the kstar string labels into kstar values to select merger types</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/cosmerge.utils.read_met_data.html#cosmerge.utils.read_met_data" title="cosmerge.utils.read_met_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_met_data</span></code></a>(path, kstar_1, kstar_2, met_grid)</p></td>
+<td><p>Reads in all COSMIC data for specified metallicity grid</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">cosmerge modules and API reference</a><ul>
+<li><a class="reference internal" href="#module-cosmerge.catgen">cosmerge.catgen Module</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cosmerge.usample">cosmerge.usample Module</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cosmerge.sfh">cosmerge.sfh Module</a><ul>
+<li><a class="reference internal" href="#id1">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cosmerge.param_dists">cosmerge.param_dists Module</a><ul>
+<li><a class="reference internal" href="#id2">Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cosmerge.utils">cosmerge.utils Module</a><ul>
+<li><a class="reference internal" href="#id3">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div><h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation index</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to cosmic-mergers’s documentation!</a></li>
+      <li>Next: <a href="api/cosmerge.catgen.Catalog.html" title="next chapter">Catalog</a></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="footer">
+    &copy; Copyright 2022, Katie Breivik.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.1.
+  </div>
+  
+  </body>
+</html>

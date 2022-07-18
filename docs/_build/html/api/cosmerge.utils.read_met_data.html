@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>read_met_data &#8212; cosmerge 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/readable.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="parse_kstar" href="cosmerge.utils.parse_kstar.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cosmerge.utils.parse_kstar.html" title="parse_kstar"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">cosmerge 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../modules.html" accesskey="U">cosmerge modules and API reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">read_met_data</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="read-met-data">
+<h1>read_met_data<a class="headerlink" href="#read-met-data" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="cosmerge.utils.read_met_data">
+<span class="sig-prename descclassname"><span class="pre">cosmerge.utils.</span></span><span class="sig-name descname"><span class="pre">read_met_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kstar_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kstar_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SFstart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13700.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SFduration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pessimistic_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CE_cool_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CE_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SMT_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kstar_1_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kstar_2_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cosmerge.utils.read_met_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in all COSMIC data for specified metallicity grid</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>path</strong><span class="classifier">string</span></dt><dd><p>path to COSMIC data where the path structure
+should be ‘{path}/dat_kstar1…’</p>
+</dd>
+<dt><strong>kstar_1</strong><span class="classifier">string</span></dt><dd><p>kstar for the primary following COSMIC dat file naming notation</p>
+</dd>
+<dt><strong>kstar_2</strong><span class="classifier">string</span></dt><dd><p>kstar for the secondary following COSMIC dat file naming notation</p>
+</dd>
+<dt><strong>met_grid</strong><span class="classifier">numpy.array</span></dt><dd><p>metallicity grid for COSMIC data</p>
+</dd>
+<dt><strong>SFstart</strong><span class="classifier">float</span></dt><dd><p>ZAMS lookback time for COSMIC population</p>
+</dd>
+<dt><strong>SFduration</strong><span class="classifier">float</span></dt><dd><p>Duration of star formation for COSMIC population</p>
+</dd>
+<dt><strong>pessimistic_cut</strong><span class="classifier">bool, optional</span></dt><dd><p>Boolean to decide whether to apply the pessimistic
+cut to the merger data based on whether there where
+common envelope events with a Hertzsprung Gap donor</p>
+<p>Note: this is unnecessary if you specified
+cemergeflag = 1 in the Params file</p>
+</dd>
+<dt><strong>CE_cool_filter</strong><span class="classifier">bool, optional</span></dt><dd><p>Boolean to decide whether to filter &gt;40 Msun ZAMS
+based on the Klencki+2021 results (arXiv: 2006.11286)</p>
+</dd>
+<dt><strong>CE_cut</strong><span class="classifier">bool, optional</span></dt><dd><p>Boolean to decide whether to throw out CE binaries</p>
+</dd>
+<dt><strong>SMT_cut</strong><span class="classifier">bool, optional</span></dt><dd><p>Boolean to decide whether to throw out 
+stable mass transfer binaries</p>
+</dd>
+<dt><strong>kstar_1_select</strong><span class="classifier">list, optional</span></dt><dd><p>If specified, will select kstars that are a subset of the
+kstar_1 data</p>
+</dd>
+<dt><strong>kstar_2_select</strong><span class="classifier">list, optional</span></dt><dd><p>If specified, will select kstars that are a subset of the
+kstar_2 data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mergers</strong><span class="classifier">numpy.array</span></dt><dd><p>Data containing compact object binaries</p>
+</dd>
+<dt><strong>N_stars</strong><span class="classifier">numpy.array</span></dt><dd><p>Total number of stars formed including singles to produce
+the data for each metallicity bin</p>
+</dd>
+<dt><strong>M_stars</strong><span class="classifier">numpy.array</span></dt><dd><p>Total amount of stars formed in Msun to produce
+the data for each metallicity bin</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="../modules.html">cosmerge modules and API reference</a><ul>
+      <li>Previous: <a href="cosmerge.utils.parse_kstar.html" title="previous chapter">parse_kstar</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/cosmerge.utils.read_met_data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="footer">
+    &copy; Copyright 2022, Katie Breivik.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.1.
+  </div>
+  
+  </body>
+</html>
