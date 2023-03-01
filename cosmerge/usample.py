@@ -1,6 +1,6 @@
 """methods to build cosmic merger populations"""
 
-from astropy.cosmology import Planck18_arXiv_v2 as Planck18
+from astropy.cosmology import Planck18
 import astropy.units as u
 import pandas as pd
 import numpy as np

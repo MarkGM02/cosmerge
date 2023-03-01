@@ -1,6 +1,6 @@
 """class for generating catalogs"""
 
-from astropy.cosmology import Planck18_arXiv_v2 as Planck18
+from astropy.cosmology import Planck18
 from astropy import units as u
 import numpy as np
 from cosmerge import usample, utils

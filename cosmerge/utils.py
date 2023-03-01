@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from astropy.cosmology import Planck18_arXiv_v2 as Planck18
+from astropy.cosmology import Planck18
 from scipy.interpolate import interp1d
 from astropy import units as u
 import tqdm
