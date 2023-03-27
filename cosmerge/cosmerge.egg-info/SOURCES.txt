@@ -1,8 +1,0 @@
-LICENSE
-README.md
-pyproject.toml
-setup.cfg
-cosmerge/cosmerge.egg-info/PKG-INFO
-cosmerge/cosmerge.egg-info/SOURCES.txt
-cosmerge/cosmerge.egg-info/dependency_links.txt
-cosmerge/cosmerge.egg-info/top_level.txt
