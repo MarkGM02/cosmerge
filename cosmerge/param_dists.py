@@ -4,7 +4,7 @@ from scipy.stats import gaussian_kde
 import numpy as np
 from scipy.special import logit
 from scipy.interpolate import interp1d
-from astropy.cosmology import Planck18_arXiv_v2 as Planck18
+from astropy.cosmology import Planck18
 import astropy.units as u
 
 

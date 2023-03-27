@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from astropy.cosmology import Planck18_arXiv_v2 as Planck18
+from astropy.cosmology import Planck18
 from scipy.interpolate import interp1d
 from astropy import units as u
 import tqdm
@@ -78,7 +78,7 @@ def parse_kstar(kstar):
 
 
 def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=0.0,
-                  pessimistic_cut=False, CE_cool_cut=False, CE_cut=False, SMT_cut=False,
+                  pessimistic_cut=False, CE_cool_filter=False, CE_cut=False, SMT_cut=False,
                   kstar_1_select=None, kstar_2_select=None):
     """
     Reads in all COSMIC data for specified metallicity grid
@@ -218,7 +218,7 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
 def get_cosmic_data(path, kstar_1, kstar_2, mets,
                     SFstart=13700.0, SFduration=0.0, pessimistic_cut=False,
-                    CE_cool_cut=False, CE_cut=False, SMT_cut=False,
+                    CE_cool_filter=False, CE_cut=False, SMT_cut=False,
                     kstar_1_select=None, kstar_2_select=None):
     """
     Reads in all COSMIC data for specified metallicity grid
@@ -252,7 +252,7 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
         Note: this is unnecessary if you specified
         cemergeflag = 1 in the Params file
         
-    CE_cool_cut : bool, optional
+    CE_cool_filter : bool, optional
         Boolean to decide whether to allow >40 Msun ZAMS
         based on the Klencki+2021 results (arXiv: 2006.11286)
 
@@ -294,7 +294,7 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
     dat = []
     for m in tqdm.tqdm(mets):
         d, N, M = read_met_data(path, kstar_1, kstar_2, m, SFstart=SFstart, SFduration=SFduration,
-                                pessimistic_cut=pessimistic_cut, CE_cool_cut=CE_cool_cut,
+                                pessimistic_cut=pessimistic_cut, CE_cool_filter=CE_cool_filter,
                                 CE_cut=CE_cut, SMT_cut=SMT_cut,
                                 kstar_1_select=kstar_1_select,
                                 kstar_2_select=kstar_2_select)

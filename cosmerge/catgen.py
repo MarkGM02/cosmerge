@@ -1,6 +1,6 @@
 """class for generating catalogs"""
 
-from astropy.cosmology import Planck18_arXiv_v2 as Planck18
+from astropy.cosmology import Planck18
 from astropy import units as u
 import numpy as np
 from cosmerge import usample, utils
@@ -73,14 +73,12 @@ class Catalog():
         self.met_grid = met_grid
         self.kstar_1 = kstar_1
         self.kstar_2 = kstar_2
-        self.SFstart = SFstart
-        self.SFduration = SFduration
 
-        kwarg_list = ['kstar_1_select', 'kstar_2_select', 'pessimistic_cut', 'CE_cut', 'SMT_cut']
+        kwarg_list = ['kstar_1_select', 'kstar_2_select', 'pessimistic_cut', 'CE_cut', 'SMT_cut', 'CE_cool_filter']
         for k in kwarg_list:
             if 'kstar' in k:
                 setattr(self, k, None)
-            elif 'cut' in k:
+            elif ('cut' in k) or ('filter' in k):
                 setattr(self, k, False)
             elif k == 'SFstart':
                 setattr(self, k, 13700.0)
@@ -95,7 +93,7 @@ class Catalog():
                                                        kstar_2=self.kstar_2,
                                                        mets=self.met_grid,
                                                        SFstart=self.SFstart,
-                                                       SFduration=self.sfduration,
+                                                       SFduration=self.SFduration,
                                                        pessimistic_cut=self.pessimistic_cut,
                                                        CE_cool_filter=self.CE_cool_filter,
                                                        CE_cut = self.CE_cut,
