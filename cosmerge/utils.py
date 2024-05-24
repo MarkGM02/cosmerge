@@ -153,8 +153,8 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
                                                                                        SFstart,
                                                                                        SFduration,
                                                                                        met_grid)
-    N_stars = np.max(pd.read_hdf(f, key='n_stars'))[0]
-    M_stars = np.max(pd.read_hdf(f, key='mass_stars'))[0]
+    N_stars = np.max(pd.read_hdf(f, key='n_stars'))
+    M_stars = np.max(pd.read_hdf(f, key='mass_stars'))
 
     bpp = pd.read_hdf(f, key='bpp')
 
