@@ -160,7 +160,11 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
     if len(bpp.bin_num.unique()) > 1e5:
         bin_num_keep = np.random.choice(bpp.bin_num.unique(), 100000, replace=False)
+        downsamp_fac = 1e5/len(bpp.bin_num.unique())
         bpp = bpp.loc[bpp.bin_num.isin(bin_num_keep)]
+        N_stars = N_stars*downsamp_fac
+        M_stars = M_stars*downsamp_fac
+
     if CE_cut and SMT_cut:
         raise Error("You can't cut everything! You should leave at least one of CE_cut or SMT_cut False")
 
