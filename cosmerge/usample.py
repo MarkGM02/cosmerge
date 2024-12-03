@@ -20,7 +20,7 @@ def md_zs(sfr_model, z_max):
     sfr_model : str
         function that returns the star formation rate model in units
         of Msun per comoving volume per time
-        choose from: sfh.md_14 or sfh.md_17 or supply your own!
+        choose from: sfh.md_14, sfh.md_17, sfh.van_son_tng, or supply your own!
 
     z_max : float
         maximum redshift for star formation
@@ -39,7 +39,7 @@ def md_zs(sfr_model, z_max):
         yield redshifts
 
 
-def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, z_max):
+def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, skew, z_max):
     """Generator for draws of formation metallicities and redshifts from a
     log-normal metallicity distribution based on Madau & Fragos (2017)
     from the sfh module and a user specified star formation rate model
@@ -63,6 +63,9 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, z_ma
     sigma_log10Z : float
         Function giving the standard deviation of the metallicity distribution in dex
         Default : sigma(log10(Z)) = 0.5.
+    
+    alpha : float
+        Skew parameter for metallicity distribution. Default is 0.
 
     z_max : float
         maximum redshift for star formation
@@ -105,9 +108,14 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, z_ma
 
         # log acceptance probability is the difference between the current and next data points
         # Should we be doing Ns, or Ms here? The rates normalize to the M instead of the N?
-        log_Pacc = sfh.log_p_Z_z(Zp, zp, sigma_log10Z) - sfh.log_p_Z_z(Z, z, sigma_log10Z) + \
-                   np.log(Ns[i]) + np.log(ns[ip]) + np.log(dZs[ip]) - \
-                   (np.log(Ns[ip]) + np.log(ns[i]) + np.log(dZs[i]))
+        if skew:
+            log_Pacc = sfh.log_p_Z_z_skewed(Zp, zp) - sfh.log_p_Z_z_skewed(Z, z) + \
+                    np.log(Ns[i]) + np.log(ns[ip]) + np.log(dZs[ip]) - \
+                    (np.log(Ns[ip]) + np.log(ns[i]) + np.log(dZs[i]))
+        else: 
+            log_Pacc = sfh.log_p_Z_z(Zp, zp, sigma_log10Z) - sfh.log_p_Z_z(Z, z, sigma_log10Z) + \
+                    np.log(Ns[i]) + np.log(ns[ip]) + np.log(dZs[ip]) - \
+                    (np.log(Ns[ip]) + np.log(ns[i]) + np.log(dZs[i]))
 
         if np.log(np.random.rand()) < log_Pacc:
             i = ip
@@ -120,8 +128,7 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, z_ma
 
 
 def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
-                      n_merger, mergers, sfh_model, sigma_log10Z=0.5,
-                      z_max=15):
+                      n_merger, mergers, sfh_model, sigma_log10Z, skew, z_max=15):
     """Generates a universe of star formation by sampling metallicities and
     redshifts according to the user specified star formation rate model,
     a mean metallicity evolution from Madau & Fragos (2017)
@@ -159,7 +166,10 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
 
     sigma_log10Z : float
         Function giving the standard deviation of the metallicity distribution in dex
-
+    
+    alpha : float
+        Skew parameter for metallicity distribution. 
+    
     z_max : float
         maximum redshift for star formation
 
@@ -179,8 +189,7 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
     # z_s: formation redshifts
     # Z_s: metallicities
     ibins, j_s, z_s, Z_s = zip(*[x for (x, i) in
-                                 zip(draw_metallicities_and_redshifts(mets, n_merger, N_sim,
-                                                                      sfh_model, sigma_log10Z, z_max),
+                                 zip(draw_metallicities_and_redshifts(mets, n_merger, N_sim, sfh_model, sigma_log10Z, skew, z_max),
                                      tqdm.tqdm(range(n_sample))) if
                                  i % n_downsample == 0])
     # we want all of these indices to be in arrays to do array manipulation later
