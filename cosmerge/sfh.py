@@ -169,7 +169,7 @@ def mean_Z_z(z):
     """
     omega = omega_z(z)
     mu = mu_z(z)
-    beta = -1.79/(np.sqrt(1 + -1.79**2))
+    beta = -1.79/(np.sqrt(1 + (-1.79)**2))
     return -omega**2 / 2 * np.log(mu / (2 * NormDist.cdf(beta * omega)))
 
 
