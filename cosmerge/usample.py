@@ -128,7 +128,7 @@ def draw_metallicities_and_redshifts(mets, ns, Ns, sfr_model, sigma_log10Z, skew
 
 
 def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
-                      n_merger, mergers, sfh_model, sigma_log10Z, skew, z_max=15):
+                      n_merger, mergers, sfh_model, skew, sigma_log10Z=0.5, z_max=15):
     """Generates a universe of star formation by sampling metallicities and
     redshifts according to the user specified star formation rate model,
     a mean metallicity evolution from Madau & Fragos (2017)
