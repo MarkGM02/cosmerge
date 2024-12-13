@@ -102,7 +102,7 @@ def log_p_Z_z(Z, z, sigma_log10Z):
 # Below are all taken from van Son 2023 (Locations of Features...)
 # Trying my best to make them flexible but I'm also prioritizing
 # getting my project finished :D 
-def van_son_tng(z):
+def van_son_tng(z, a=0.017, b=1.487, c=4.442, d=5.886):
     """Star formation rate given in van Son (2023), which was based on the TNG simulation. In units of mass per comoving volume as a function of redshift.
     
     Parameters
@@ -116,7 +116,7 @@ def van_son_tng(z):
         star formation rate per comoving volume at redshift z
         with astropy units"""
     
-    sfr = 0.017 * (1 + z)**1.487 / (1 + ((1 + z) / 4.442)**5.886) * u.Msun/(u.Mpc**3 * u.yr)
+    sfr = a * (1 + z)**b / (1 + ((1 + z) / c)**d) * u.Msun/(u.Mpc**3 * u.yr)
     
     return sfr
 
