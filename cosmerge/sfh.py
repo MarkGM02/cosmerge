@@ -121,7 +121,7 @@ def van_son_tng(z):
     return sfr
 
 
-def mu_z(z):
+def mu_z(z, mu0=0.025, muz=-0.049):
     """Redshift dependence of mean metallicity assuming no skew.
     
     Parameters
@@ -134,10 +134,10 @@ def mu_z(z):
     mu : float or numpy.array
         mean metallicity at specified redshift for 0 skew distribution"""
     
-    return 0.025 * 10**(-0.049 * z)
+    return mu0 * 10**(muz * z)
 
 
-def omega_z(z):
+def omega_z(z, omega0=1.129, omegaz=0.048):
     """Redshift dependence of scale of metallicity distribution.
     
     Parameters
@@ -150,11 +150,11 @@ def omega_z(z):
     omega : float or numpy.array
         scale of metallicity distribution at specified metallicity"""
     
-    return 1.129 * 10**(0.048 * z)
+    return omega0 * 10**(omegaz * z)
 
 
-def mean_Z_z(z):
-    """Redshift dependence of mean metallicity for skewed distribution.
+def xi_z(z, alpha=-1.79):
+    """Redshift dependence of mean log metallicity for skewed distribution.
     
     Parameters
     ----------
@@ -164,16 +164,16 @@ def mean_Z_z(z):
     Returns
     -------
     xi : float or numpy.array
-        updated mean of metallicity distribution assuming a skewed
+        updated mean of log metallicity distribution assuming a skewed
         log-normal distribution
     """
     omega = omega_z(z)
     mu = mu_z(z)
-    beta = -1.79/(np.sqrt(1 + (-1.79)**2))
+    beta = alpha/(np.sqrt(1 + alpha**2))
     return np.log(mu / (2 * NormDist.cdf(beta * omega))) - omega**2 / 2
 
 
-def log_p_Z_z_skewed(Z, z):
+def log_p_Z_z_skewed(Z, z, alpha=-1.79):
     """The metallicity and redshift log probability distribution function. 
     Default values of constants correspond to the star formation rate given 
     in van Son (2023), which was based on the TNG simulation. 
@@ -192,7 +192,7 @@ def log_p_Z_z_skewed(Z, z):
         specified metallicity and redshift values"""
     
     omega = omega_z(z)
-    xi = mean_Z_z(z)
-    dPdlnZ = 2 / omega * NormDist.pdf((np.log(Z) - xi) / omega) * NormDist.cdf(-1.79 * (np.log(Z) - xi) / omega)
+    xi = xi_z(z)
+    dPdlnZ = 2 / omega * NormDist.pdf((np.log(Z) - xi) / omega) * NormDist.cdf(alpha * (np.log(Z) - xi) / omega)
     
     return np.log(dPdlnZ)
