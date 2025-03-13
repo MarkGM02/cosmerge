@@ -20,7 +20,7 @@ class Catalog():
     sfh_model : method in sfh module
         function that returns the star formation rate model in units
         of Msun per comoving volume per time
-        choose from: sfh.md_14 or sfh.md_17 or supply your own!
+        choose from: sfh.md_14, sfh.md_17, sfh.van_son_tng, or supply your own!
 
     met_grid : numpy.array
         metallicity grid for COSMIC data
@@ -36,6 +36,9 @@ class Catalog():
 
     SFduration : float
         Duration of star formation for COSMIC population
+
+    skew : bool
+        Whether to use the skewed log-normal metallicity distribution.
 
     pessimistic_cut : bool, optional
         kwarg -- decides whether to apply the pessimistic
@@ -67,12 +70,13 @@ class Catalog():
 
     """
 
-    def __init__(self, dat_path, sfh_model, met_grid, kstar_1, kstar_2, **kwargs):
+    def __init__(self, dat_path, sfh_model, met_grid, kstar_1, kstar_2, skew, **kwargs):
         self.dat_path = dat_path
         self.sfh_model = sfh_model
         self.met_grid = met_grid
         self.kstar_1 = kstar_1
         self.kstar_2 = kstar_2
+        self.skew = skew
 
         kwarg_list = ['kstar_1_select', 'kstar_2_select', 'pessimistic_cut', 'CE_cut', 'SMT_cut', 'CE_cool_filter']
         for k in kwarg_list:
@@ -114,6 +118,7 @@ class Catalog():
                                                    n_merger=self.n_merger,
                                                    mergers=self.merger_dat,
                                                    sfh_model=self.sfh_model,
+                                                   skew=self.skew,
                                                    sigma_log10Z=sigma_log10Z,
                                                    z_max=z_max)
 
