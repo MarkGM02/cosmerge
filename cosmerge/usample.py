@@ -167,8 +167,9 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
     sigma_log10Z : float
         Function giving the standard deviation of the metallicity distribution in dex
     
-    alpha : float
-        Skew parameter for metallicity distribution. 
+    skew : bool
+        If true, use skewed log-normal metallicity distribution. 
+        Otherwise, use a log-normal distribution.  
     
     z_max : float
         maximum redshift for star formation
