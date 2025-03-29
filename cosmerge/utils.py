@@ -7,6 +7,18 @@ from scipy.interpolate import interp1d
 from astropy import units as u
 import tqdm
 
+"""predefined masks for use in catalog generation"""
+bbh_merger_mask = ('bpp', [lambda bpp: bpp.kstar_1 == 14,
+                           lambda bpp: bpp.kstar_2 == 14,
+                           lambda bpp: bpp.evol_type == 3]
+)
+
+bns_merger_mask = ('bpp', [lambda bpp: bpp.kstar_1 == 13,
+                           lambda bpp: bpp.kstar_2 == 13,
+                           lambda bpp: bpp.evol_type == 3]
+)
+sn_mask = ('bpp', [lambda bpp: bpp.evol_type.isin([15,16])])
+mass_loss_mask = ('bcm', [lambda bcm: (bcm.deltam1 < -1e-4) | (bcm.deltam2 < -1e-4)])
 
 def get_z_interp(z_max):
     """Generates an interpolation to convert between lookback
@@ -48,38 +60,9 @@ def get_met_bins(mets):
 
     return met_bins[::2]
 
-
-def parse_kstar(kstar):
-    """
-    Parses the kstar string labels into kstar values
-    to select merger types
-
-    Parameters
-    ----------
-    kstar : string
-        specifies the merger types for the primary and secondary stars
-        where kstar = '13_14' contains both NSs and BHs
-        and kstar = '13' just contains NSs
-
-    Returns
-    -------
-    kstar_list : list
-        list which can be used to select mergers of interest from COSMIC data
-    """
-
-    if len(kstar) == 2:
-        kstar_list = [int(kstar)]
-    else:
-        kstar_hi = int(kstar[:2])
-        kstar_lo = int(kstar[3:])
-        kstar_list = range(kstar_hi, kstar_lo + 1)
-
-    return kstar_list
-
-
-def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=0.0,
-                  pessimistic_cut=False, CE_cool_filter=False, CE_cut=False, SMT_cut=False,
-                  kstar_1_select=None, kstar_2_select=None):
+def read_met_data(path, kstar_1, kstar_2, met_grid, event_masks, SFstart=13700.0,
+                  SFduration=0.0, pessimistic_cut=False, CE_cool_filter=False,
+                  CE_cut=False, SMT_cut=False, kstar_1_select=None, kstar_2_select=None):
     """
     Reads in all COSMIC data for specified metallicity grid
 
@@ -97,7 +80,12 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
     met_grid : numpy.array
         metallicity grid for COSMIC data
-        
+
+    event_masks : tuple
+        tuple containing the dataframe name to apply the 
+        masks to, and a list of functions to apply to that
+        dataframe to select the desired events
+
     SFstart : float
         ZAMS lookback time for COSMIC population
     
@@ -106,7 +94,7 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
     pessimistic_cut : bool, optional
         Boolean to decide whether to apply the pessimistic
-        cut to the merger data based on whether there where
+        cut to the event data based on whether there where
         common envelope events with a Hertzsprung Gap donor
 
         Note: this is unnecessary if you specified
@@ -123,18 +111,12 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
         Boolean to decide whether to throw out 
         stable mass transfer binaries
 
-    kstar_1_select : list, optional
-        If specified, will select kstars that are a subset of the
-        kstar_1 data
-
-    kstar_2_select : list, optional
-        If specified, will select kstars that are a subset of the
-        kstar_2 data
-
     Returns
     -------
-    mergers : numpy.array
-        Data containing compact object binaries
+    events : numpy.array
+        Data containing user chosen events formatted as a bpp.
+        Each bin_num corresponds to one row, where the other
+        columns are lists of the data for that bin_num.
         
     N_stars : numpy.array
         Total number of stars formed including singles to produce
@@ -157,11 +139,13 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
     M_stars = np.max(pd.read_hdf(f, key='mass_stars'))
 
     bpp = pd.read_hdf(f, key='bpp')
+    bcm = pd.read_hdf(f, key='bcm')
 
     if len(bpp.bin_num.unique()) > 1e5:
         bin_num_keep = np.random.choice(bpp.bin_num.unique(), 100000, replace=False)
         downsamp_fac = 1e5/len(bpp.bin_num.unique())
         bpp = bpp.loc[bpp.bin_num.isin(bin_num_keep)]
+        bcm = bcm.loc[bcm.bin_num.isin(bin_num_keep)]
         N_stars = N_stars*downsamp_fac
         M_stars = M_stars*downsamp_fac
 
@@ -171,9 +155,11 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
     if CE_cut:
         bpp_CE_bin_num = bpp.loc[bpp.evol_type == 7].bin_num.unique()
         bpp = bpp.loc[~bpp.bin_num.isin(bpp_CE_bin_num)]
+        bcm = bcm.loc[~bcm.bin_num.isin(bpp_CE_bin_num)]
     if SMT_cut:
         bpp_CE_bin_num = bpp.loc[bpp.evol_type == 7].bin_num.unique()
         bpp = bpp.loc[bpp.bin_num.isin(bpp_CE_bin_num)]
+        bcm = bcm.loc[bcm.bin_num.isin(bpp_CE_bin_num)]
     
     # filter out HG donors if requested
     if pessimistic_cut:
@@ -186,6 +172,9 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
 
         bpp = bpp.loc[~bpp.bin_num.isin(bpp_pess_cut_1)]
         bpp = bpp.loc[~bpp.bin_num.isin(bpp_pess_cut_2)]
+
+        bcm = bcm.loc[~bcm.bin_num.isin(bpp_pess_cut_1)]
+        bcm = bcm.loc[~bcm.bin_num.isin(bpp_pess_cut_2)]
     
     if CE_cool_filter:
         bpp_ce_1 = bpp.loc[((bpp.evol_type == 7) & (bpp.RRLO_1 > 1))].bin_num
@@ -199,31 +188,28 @@ def read_met_data(path, kstar_1, kstar_2, met_grid, SFstart=13700.0, SFduration=
         bpp_cut_2 = bpp_ce_2_zams.loc[bpp_ce_2_zams.mass_2 > 40].bin_num
         
         bpp = bpp.loc[~bpp.bin_num.isin(bpp_cut_1)]
-        bpp = bpp.loc[~bpp.bin_num.isin(bpp_cut_2)]        
-        
-    if kstar_1_select is not None:
-        kstar_1 = kstar_1_select
-    else:
-        # parse the kstars since they are supplied in a string format
-        kstar_1 = parse_kstar(kstar=kstar_1)
+        bpp = bpp.loc[~bpp.bin_num.isin(bpp_cut_2)]
 
-    if kstar_2_select is not None:
-        kstar_2 = kstar_2_select
-    else:
-        # parse the kstars since they are supplied in a string format
-        kstar_2 = parse_kstar(kstar=kstar_2)
+        bcm = bcm.loc[~bcm.bin_num.isin(bpp_cut_1)]
+        bcm = bcm.loc[~bcm.bin_num.isin(bpp_cut_2)]        
 
-    # select mergers based on supplied kstars
-    mergers = bpp.loc[(bpp.kstar_1.isin(kstar_1)) & (bpp.kstar_2.isin(kstar_2)) &
-                      (bpp.evol_type == 3)]
+    # select events based on provided masks. All masks correspond to one dataframe
+    df_name, mask_funcs = event_masks
+    events = bpp if df_name == 'bpp' else bcm
+    
+    for mask_func in mask_funcs:
+        events = events.loc[mask_func(events)]
+    
+    #collapse to one row per bin_num, keep exact bpp format
+    if df_name == 'bcm': events = events.reindex(columns=bpp.columns)
+    events = events.groupby('bin_num', as_index=False).agg(list) 
 
-    return np.array(mergers, dtype=object), N_stars, M_stars
+    return np.array(events, dtype=object), N_stars, M_stars
 
 
-def get_cosmic_data(path, kstar_1, kstar_2, mets,
+def get_cosmic_data(path, kstar_1, kstar_2, mets, event_masks,
                     SFstart=13700.0, SFduration=0.0, pessimistic_cut=False,
-                    CE_cool_filter=False, CE_cut=False, SMT_cut=False,
-                    kstar_1_select=None, kstar_2_select=None):
+                    CE_cool_filter=False, CE_cut=False, SMT_cut=False):
     """
     Reads in all COSMIC data for specified metallicity grid
 
@@ -241,6 +227,11 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
 
     mets : numpy.array
         metallicity grid for COSMIC data
+    
+    event_masks : tuple
+        tuple containing the dataframe name to apply the 
+        masks to, and a list of functions to apply to that
+        dataframe to select the desired events
         
     SFstart : float
         ZAMS lookback time for population
@@ -250,7 +241,7 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
 
     pessimistic_cut : bool, optional
         Boolean to decide whether to apply the pessimistic
-        cut to the merger data based on whether there where
+        cut to the event data based on whether there where
         common envelope events with a Hertzsprung Gap donor
 
         Note: this is unnecessary if you specified
@@ -267,14 +258,6 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
         Boolean to decide whether to throw out 
         stable mass transfer binaries
 
-    kstar_1_select : list, optional
-        If specified, will select kstars that are a subset of the
-        kstar_1 data
-
-    kstar_2_select : list, optional
-        If specified, will select kstars that are a subset of the
-        kstar_2 data
-
     Returns
     -------
     Ms : numpy.array
@@ -286,10 +269,10 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
         the data for each metallicity bin
 
     ns : numpy.array
-        The number of compact object binaries per metallicity bin
+        The number of event binaries per metallicity bin
 
     dat : numpy.array
-        Data containing compact object binaries
+        Data containing event binaries
     """
 
     Ns = []
@@ -297,11 +280,10 @@ def get_cosmic_data(path, kstar_1, kstar_2, mets,
     ns = []
     dat = []
     for m in tqdm.tqdm(mets):
-        d, N, M = read_met_data(path, kstar_1, kstar_2, m, SFstart=SFstart, SFduration=SFduration,
-                                pessimistic_cut=pessimistic_cut, CE_cool_filter=CE_cool_filter,
-                                CE_cut=CE_cut, SMT_cut=SMT_cut,
-                                kstar_1_select=kstar_1_select,
-                                kstar_2_select=kstar_2_select)
+        d, N, M = read_met_data(path, kstar_1, kstar_2, m, event_masks, SFstart=SFstart,
+                                SFduration=SFduration, pessimistic_cut=pessimistic_cut,
+                                CE_cool_filter=CE_cool_filter,
+                                CE_cut=CE_cut, SMT_cut=SMT_cut)
         Ms.append(M)
         Ns.append(N)
         dat.append(d)
