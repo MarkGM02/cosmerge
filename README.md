@@ -1,2 +1,2 @@
 # cosmerge
-a post-processing Package to turn COSMIC data into compact object merger catalogs
+a post-processing package to turn COSMIC data into transient event catalogs
