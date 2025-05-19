@@ -239,6 +239,11 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
                      Z_s[met_mask], np.ones(len(t_form)) * mets[ii],
                      events[ii][j_s[met_mask], m1_ind],
                      events[ii][j_s[met_mask], m2_ind],
+                     events[ii][j_s[met_mask], kstar1_ind],
+                     events[ii][j_s[met_mask], kstar2_ind],
+                     events[ii][j_s[met_mask], sep_ind],
+                     events[ii][j_s[met_mask], porb_ind],
+                     events[ii][j_s[met_mask], ecc_ind],
                      events[ii][j_s[met_mask], bin_num_ind]]),
                                 axis=1)
 
