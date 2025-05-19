@@ -178,7 +178,7 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
     -------
     dat : pandas.DataFrame
         event catalog containing formation metallicities, redshifts,
-        and lookback times as well as event times, masses,
+        and lookback times as well as event times, masses, kstars, orbital parameters,
         and COSMIC bin_num indexes
 
     ibins : numpy.array
@@ -201,10 +201,7 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
 
     # Now that we have a bunch of formation metallicities and redshifts
     # let's connect them to the COSMIC event to build an event catalog
-    bin_num_ind = 0
-    t_delay_ind = 1
-    m1_ind = 2
-    m2_ind = 3
+    bin_num_ind, t_delay_ind, m1_ind, m2_ind, kstar1_ind, kstar2_ind, sep_ind, porb_ind, ecc_ind = range(9)
 
     dat = []
     # loop through our metallicity grid for easy COSMIC data access
@@ -230,6 +227,11 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
                                  Z_s[met_mask], np.ones(len(t_form)) * mets[ii],
                                  events[ii][j_s[met_mask], m1_ind],
                                  events[ii][j_s[met_mask], m2_ind],
+                                 events[ii][j_s[met_mask], kstar1_ind],
+                                 events[ii][j_s[met_mask], kstar2_ind],
+                                 events[ii][j_s[met_mask], sep_ind],
+                                 events[ii][j_s[met_mask], porb_ind],
+                                 events[ii][j_s[met_mask], ecc_ind],
                                  events[ii][j_s[met_mask], bin_num_ind]])
             else:
                 dat = np.append(dat, np.vstack(
@@ -243,9 +245,10 @@ def generate_universe(n_sample, n_downsample, mets, M_sim, N_sim,
     dat = pd.DataFrame(dat.T,
                        columns=['t_form', 't_event', 'z_form',
                                 'met', 'met_cosmic', 'm1', 'm2',
-                                'bin_num'])
+                                'kstar1', 'kstar2', 'sep', 'porb',
+                                'ecc', 'bin_num'])
     # seperate each event into a seperate row
-    dat = dat.explode(['t_event', 'm1', 'm2'], ignore_index=True)
+    dat = dat.explode(['t_event', 'm1', 'm2', 'kstar1', 'kstar2', 'sep', 'porb', 'ecc'], ignore_index=True)
     
     # return event catalog, event fraction, and formation statistics
     return dat, ibins
