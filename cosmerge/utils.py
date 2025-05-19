@@ -17,6 +17,7 @@ bns_merger_mask = ('bpp', [lambda bpp: bpp.kstar_1 == 13,
                            lambda bpp: bpp.kstar_2 == 13,
                            lambda bpp: bpp.evol_type == 3]
 )
+
 sn_mask = ('bpp', [lambda bpp: bpp.evol_type.isin([15,16])])
 mass_loss_mask = ('bcm', [lambda bcm: (bcm.deltam1 < -1e-4) | (bcm.deltam2 < -1e-4)])
 
@@ -62,7 +63,7 @@ def get_met_bins(mets):
 
 def read_met_data(path, kstar_1, kstar_2, met_grid, event_masks, SFstart=13700.0,
                   SFduration=0.0, pessimistic_cut=False, CE_cool_filter=False,
-                  CE_cut=False, SMT_cut=False, kstar_1_select=None, kstar_2_select=None):
+                  CE_cut=False, SMT_cut=False):
     """
     Reads in all COSMIC data for specified metallicity grid
 
